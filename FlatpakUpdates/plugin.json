@@ -9,6 +9,6 @@
     "type": "widget",
     "component": "./FlatpakUpdate.qml"
     "permissions": [
-      "process_read"
+      "process"
     ]
 }
