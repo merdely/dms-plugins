@@ -97,13 +97,19 @@ PluginComponent {
       }
     }
 
+    Loader {
+        id: tooltipLoader
+        active: false
+        sourceComponent: DankTooltip {}
+    }
+
     horizontalBarPill: Component {
         Row {
-            id: updaterIcon
             anchors.centerIn: parent
             spacing: Theme.spacingXS
 
             DankIcon {
+                id: dankIcon
                 anchors.verticalCenter: parent.verticalCenter
                 name: {
                     if (root.isChecking)
@@ -122,6 +128,28 @@ PluginComponent {
                         return Theme.primary;
                     return root.isActive ? Theme.primary : Theme.surfaceText;
                 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    acceptedButtons: Qt.NoButton
+                    onEntered: {
+                        if (root.parentScreen) {
+                            tooltipLoader.active = true;
+                            if (tooltipLoader.item) {
+                                const tooltipText = `Flatpak Updates: ${root.updateCount}`
+                                const isLeft = root.axis?.edge === "left";
+                                tooltipLoader.item.show(tooltipText, tooltipLoader.item.width / 2 + dankIcon.width + dankIcon.mapToGlobal(0, 0).x, Theme.barHeight, root.parentScreen, isLeft, !isLeft);
+                            }
+                        }
+                    }
+                    onExited: {
+                        if (tooltipLoader.item) {
+                            tooltipLoader.item.hide();
+                        }
+                        tooltipLoader.active = false;
+                    }
+                }
             }
 
             StyledText {
@@ -134,6 +162,7 @@ PluginComponent {
             }
         }
     }
+
     popoutContent: Component {
         PopoutComponent {
             id: popout

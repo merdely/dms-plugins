@@ -13,6 +13,9 @@ for line in output.stdout.splitlines():
     if len(arr) == 2:
         applist[arr[0]] = arr[1]
 
+#print('{ "name": "Fake App", "id": "app.fake.App", "currentVersion": "1.0", "newVersion": "1.1" }')
+#quit()
+
 output = ""
 cmd = [ 'env', 'FLATPAK_FANCY_OUTPUT=0', 'flatpak', 'remote-ls', '--updates', '--columns', 'name,application,version' ]
 result = subprocess.run(cmd, capture_output=True, text=True)

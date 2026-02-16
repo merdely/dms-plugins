@@ -2,7 +2,7 @@
     "id": "flatpakUpdates",
     "name": "Flatpak Updates",
     "description": "Check for and install Flatpak Updates",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "license": "MIT",
     "author": "Michael Erdely",
     "icon": "file_download",
