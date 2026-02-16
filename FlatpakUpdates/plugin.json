@@ -7,7 +7,7 @@
     "author": "Michael Erdely",
     "icon": "file_download",
     "type": "widget",
-    "component": "./FlatpakUpdate.qml"
+    "component": "./FlatpakUpdate.qml",
     "permissions": [
       "process"
     ]
