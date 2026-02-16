@@ -1,4 +1,4 @@
-# Dank Flatpak Updates
+# Flatpak Updates
 
 ## Type: DankBar Widget
 
