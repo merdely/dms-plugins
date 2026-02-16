@@ -1,11 +1,14 @@
 {
     "id": "flatpakUpdates",
     "name": "Flatpak Updates",
-    "description": "Check for Flatpak Updates",
+    "description": "Check for and install Flatpak Updates",
     "version": "1.0.0",
     "license": "MIT",
     "author": "Michael Erdely",
-    "icon": "widgets",
+    "icon": "file_download",
     "type": "widget",
     "component": "./FlatpakUpdate.qml"
+    "permissions": [
+      "process_read"
+    ]
 }
