@@ -7,7 +7,7 @@
 
 ## Repository Info
 
-- **Repository home**: https://git.erdelynet.com/mike/dms-plugins
+- **Repository Home**: https://git.erdelynet.com/mike/dms-plugins
 - **Github Mirror**: https://github.com/merdely/dms-plugins
 - **Issues**: https://github.com/merdely/dms-plugins/issues
 - **Pull Requests**: https://github.com/merdely/dms-plugins/pulls
