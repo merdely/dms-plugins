@@ -1,5 +1,7 @@
 # Dank Flatpak Updates
 
+## Type: DankBar Widget
+
 ## Check for and allow for Flatpak Updates
 
 This plugin works in a very similar way to the System Updates widget. It

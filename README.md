@@ -2,5 +2,6 @@
 
 ## Below are plugins for [DankMaterialShell](https://danklinux.com/)
 
-* [Flatpak Updates](FlatpakUpdates)
+### DankBar Widgets
+* [Flatpak Updates](FlatpakUpdates) - Check for and install Flatpak Updates
 
