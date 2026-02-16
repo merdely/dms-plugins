@@ -21,4 +21,6 @@ allows for adding a widget to the DankBar to check for Flatpak updates.
 
 **Note**: As of right now it only supports the --user mode for flatpak
 
+## Screenshot
+
 ![Screenshot of Flatpak Update's Popout](/screenshots/flatpakupdates-popout.png)
