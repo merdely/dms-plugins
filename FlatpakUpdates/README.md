@@ -23,5 +23,4 @@ allows for adding a widget to the DankBar to check for Flatpak updates.
 
 ![Screenshot of Flatpak Update's Popout](/screenshots/flatpakupdates-popout.png)
 
-<img src"/screenshots/flatpakupdates-popout.png" alt="Screenshot of Flatpak Updates' Popout"
-     width="250" />
+<img src"/screenshots/flatpakupdates-popout.png" alt="Screenshot of Flatpak Updates' Popout" width="250" />
