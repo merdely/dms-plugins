@@ -1,12 +1,5 @@
 # Flatpak Updates
 
-## Repository Info
-
-- **Repository Home**: https://git.erdelynet.com/mike/dms-plugins
-- **Github Mirror**: https://github.com/merdely/dms-plugins
-- **Issues**: https://github.com/merdely/dms-plugins/issues
-- **Pull Requests**: https://github.com/merdely/dms-plugins/pulls
-
 ## Type: DankBar Widget
 
 ## Check for and install Flatpak Updates
@@ -19,3 +12,11 @@ allows for adding a widget to the DankBar to check for Flatpak updates.
 ## Screenshot
 
 ![Screenshot of Flatpak Update's Popout](/screenshots/flatpakupdates-popout.png)
+
+## Repository Info
+
+- **Repository Home**: https://git.erdelynet.com/mike/dms-plugins
+- **Github Mirror**: https://github.com/merdely/dms-plugins
+- **Issues**: https://github.com/merdely/dms-plugins/issues
+- **Pull Requests**: https://github.com/merdely/dms-plugins/pulls
+
