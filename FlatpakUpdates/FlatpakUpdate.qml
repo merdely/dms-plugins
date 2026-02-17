@@ -129,6 +129,23 @@ PluginComponent {
                     return root.isActive ? Theme.primary : Theme.surfaceText;
                 }
 
+                RotationAnimation {
+                    id: rotationDankIcon
+                    target: dankIcon
+                    property: "rotation"
+                    from: 0
+                    to: 360
+                    duration: 1000
+                    running: root.isChecking
+                    loops: Animation.Infinite
+
+                    onRunningChanged: {
+                        if (!running) {
+                            dankIcon.rotation = 0;
+                        }
+                    }
+                }
+
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
