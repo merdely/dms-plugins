@@ -124,7 +124,7 @@ PluginComponent {
                 color: {
                     if (root.hasError)
                         return Theme.error;
-                    if (root.updateCount > 0)
+                    if (root.updateCount > 0 || root.isChecking)
                         return Theme.primary;
                     return root.isActive ? Theme.primary : Theme.surfaceText;
                 }
