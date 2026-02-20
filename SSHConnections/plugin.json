@@ -6,7 +6,7 @@
   "author": "Michael Erdely",
   "icon": "extension",
   "type": "launcher",
-  "trigger": "@",
+  "trigger": ";",
   "viewMode": "list",
   "viewModeEnforced": false,
   "component": "./sshConnections.qml",

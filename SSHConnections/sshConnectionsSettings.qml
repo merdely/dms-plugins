@@ -8,12 +8,6 @@ PluginSettings {
     pluginId: "sshConnections"
 
 
-    Component.onCompleted: {
-        const currentTrigger = root.loadValue("trigger", ";");
-        if (!currentTrigger || currentTrigger.trim().length === 0)
-            root.saveValue("trigger", ";");
-    }
-
     StyledText {
         width: parent.width
         text: "SSH Connections Settings"
@@ -53,7 +47,7 @@ PluginSettings {
                     if (value)
                         root.saveValue("trigger", "");
                     else
-                        root.saveValue("trigger", triggerSetting.value || "\\");
+                        root.saveValue("trigger", triggerSetting.value || ";");
                 }
             }
 
