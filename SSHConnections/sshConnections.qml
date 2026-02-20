@@ -6,12 +6,17 @@ import qs.Services
 QtObject {
     id: root
 
-    property var pluginService: null
-    property string trigger: ";"
+    readonly property string default_trigger: ";"
+    readonly property var default_server_list: [{ "server": "localhost" }]
+    readonly property string default_terminal: "kitty"
+    readonly property string default_exec_flag: "-e"
 
-    property var server_list: [ { "server": "localhost" } ]
-    property string terminal: "kitty"
-    property string execFlag: "-e"
+
+    property var pluginService: null
+    property string trigger: default_trigger
+    property var server_list: default_server_list
+    property string terminal: default_terminal
+    property string exec_flag: default_exec_flag
 
     signal itemsChanged()
 
@@ -19,10 +24,10 @@ QtObject {
         console.info("sshConnections: Plugin loaded")
 
         if (pluginService) {
-            trigger = pluginService.loadPluginData("sshConnections", "trigger", ";");
-            server_list = pluginService.loadPluginData("sshConnections", "server_list", [{"server":"localhost"}]);
-            terminal = pluginService.loadPluginData("sshConnections", "terminal", "kitty");
-            execFlag = pluginService.loadPluginData("sshConnections", "execFlag", "-e");
+            trigger = pluginService.loadPluginData("sshConnections", "trigger", default_trigger);
+            server_list = pluginService.loadPluginData("sshConnections", "server_list", default_server_list);
+            terminal = pluginService.loadPluginData("sshConnections", "terminal", default_terminal);
+            exec_flag = pluginService.loadPluginData("sshConnections", "exec_flag", default_exec_flag);
         }
     }
 
@@ -65,34 +70,25 @@ QtObject {
             return;
         const host = item.action.substring(4); // Remove "sshConnections:" prefix
         const terminal = getTerminalCommand();
-        console.info("sshConnections: Running '" + terminal.cmd + " " + terminal.execFlag + " ssh " + host + "'");
-        Quickshell.execDetached([terminal.cmd, terminal.execFlag, "ssh", host]);
+        console.info("sshConnections: Running '" + terminal.cmd + " " + terminal.exec_flag + " ssh " + host + "'");
+        Quickshell.execDetached([terminal.cmd, terminal.exec_flag, "ssh", host]);
     }
 
     // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
     function getTerminalCommand() {
         if (pluginService) {
-            const terminal = pluginService.loadPluginData("sshConnections", "terminal", "kitty");
-            const execFlag = pluginService.loadPluginData("sshConnections", "execFlag", "-e");
-            if (terminal && execFlag) {
+            const terminal = pluginService.loadPluginData("sshConnections", "terminal", default_terminal);
+            const exec_flag = pluginService.loadPluginData("sshConnections", "exec_flag", default_exec_flag);
+            if (terminal && exec_flag) {
                 return {
                     cmd: terminal,
-                    execFlag: execFlag
+                    exec_flag: exec_flag
                 };
             }
         }
         return {
-            cmd: "kitty",
-            execFlag: "-e"
+            cmd: default_terminal,
+            exec_flag: default_exec_flag
         };
-    }
-
-    onTriggerChanged: {
-        if (pluginService) {
-            pluginService.savePluginData("sshConnections", "trigger", trigger);
-            pluginService.savePluginData("sshConnections", "server_list", server_list);
-            pluginService.savePluginData("sshConnections", "terminal", terminal);
-            pluginService.savePluginData("sshConnections", "execFlag", execFlag);
-        }
     }
 }

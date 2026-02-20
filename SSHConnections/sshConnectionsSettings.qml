@@ -7,6 +7,9 @@ PluginSettings {
     id: root
     pluginId: "sshConnections"
 
+    Component.onCompleted {
+      console.info("sshConnectionsSettings: Plugin settings loaded")
+    }
 
     StyledText {
         width: parent.width
@@ -94,7 +97,7 @@ PluginSettings {
             spacing: Theme.spacingXS
 
             StringSetting {
-                settingKey: "execFlag"
+                settingKey: "exec_flag"
                 label: "Exec Flag"
                 description: "Flag for Terminal Application to execute programs (e.g. -e)"
                 placeholder: "-e"
