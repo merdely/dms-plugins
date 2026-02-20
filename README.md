@@ -5,6 +5,9 @@
 ### DankBar Widgets
 * [Flatpak Updates](FlatpakUpdates) - Check for and install Flatpak Updates
 
+### Launcher Plugins
+* [SSH Connections](SSHConnections) - Make SSH Connections from Launcher
+
 ## Repository Info
 
 - **Repository Home**: https://git.erdelynet.com/mike/dms-plugins
