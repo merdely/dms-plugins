@@ -9,9 +9,9 @@ PluginSettings {
 
 
     Component.onCompleted: {
-        const currentTrigger = root.loadValue("trigger", ">");
+        const currentTrigger = root.loadValue("trigger", ";");
         if (!currentTrigger || currentTrigger.trim().length === 0)
-            root.saveValue("trigger", ">");
+            root.saveValue("trigger", ";");
     }
 
     StyledText {
@@ -22,12 +22,51 @@ PluginSettings {
         color: Theme.surfaceText
     }
 
-    StringSetting {
-        settingKey: "trigger"
-        label: "Trigger Prefix"
-        description: "Type this prefix to search SSH Connection List (default: >)"
-        placeholder: ">"
-        defaultValue: ">"
+    StyledRect {
+        width: parent.width
+        height: triggerColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
+
+        Column {
+            id: triggerColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
+
+            StyledText {
+                text: I18n.tr("Activation")
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+
+            ToggleSetting {
+                id: noTriggerToggle
+                settingKey: "noTrigger"
+                label: I18n.tr("Always Active")
+                description: value ? I18n.tr("Keybinds shown alongside regular search results") : I18n.tr("Use trigger prefix to activate")
+                defaultValue: false
+                onValueChanged: {
+                    if (!isInitialized)
+                        return;
+                    if (value)
+                        root.saveValue("trigger", "");
+                    else
+                        root.saveValue("trigger", triggerSetting.value || "\\");
+                }
+            }
+
+            StringSetting {
+                id: triggerSetting
+                visible: !noTriggerToggle.value
+                settingKey: "trigger"
+                label: I18n.tr("Trigger Prefix")
+                description: "Type this prefix to search SSH Connection List (default: ;)"
+                placeholder: ";"
+                defaultValue: ";"
+            }
+        }
     }
 
     // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml

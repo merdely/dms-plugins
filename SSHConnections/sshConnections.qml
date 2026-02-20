@@ -7,7 +7,7 @@ QtObject {
     id: root
 
     property var pluginService: null
-    property string trigger: ">"
+    property string trigger: ";"
 
     property var server_list: [ { "server": "localhost" } ]
     property string terminal: "kitty"
@@ -19,7 +19,7 @@ QtObject {
         console.info("sshConnections: Plugin loaded")
 
         if (pluginService) {
-            trigger = pluginService.loadPluginData("sshConnections", "trigger", ">");
+            trigger = pluginService.loadPluginData("sshConnections", "trigger", ";");
             server_list = pluginService.loadPluginData("sshConnections", "server_list", [{"server":"localhost"}]);
             terminal = pluginService.loadPluginData("sshConnections", "terminal", "kitty");
             execFlag = pluginService.loadPluginData("sshConnections", "execFlag", "-e");
