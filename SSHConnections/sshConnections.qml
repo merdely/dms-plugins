@@ -87,7 +87,6 @@ QtObject {
         };
     }
 
-    /*
     onTriggerChanged: {
         if (pluginService) {
             pluginService.savePluginData("sshConnections", "trigger", trigger);
@@ -96,5 +95,4 @@ QtObject {
             pluginService.savePluginData("sshConnections", "execFlag", execFlag);
         }
     }
-    */
 }
