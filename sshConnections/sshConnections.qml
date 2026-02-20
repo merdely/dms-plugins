@@ -68,10 +68,10 @@ QtObject {
     function executeItem(item) {
         if (!item?.action)
             return;
-        const host = item.action.substring(4); // Remove "ssh:" prefix
+        const server = item.action.substring(4); // Remove "ssh:" prefix
         const terminal = getTerminalCommand();
-        console.info(plugin_name + ": Running '" + terminal.cmd + " " + terminal.exec_flag + " ssh " + host + "'");
-        Quickshell.execDetached([terminal.cmd, terminal.exec_flag, "ssh", host]);
+        console.info(plugin_name + ": Running '" + terminal.cmd + " " + terminal.exec_flag + " ssh " + server + "'");
+        Quickshell.execDetached([terminal.cmd, terminal.exec_flag, "ssh", server]);
     }
 
     // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml

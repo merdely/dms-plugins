@@ -1,8 +1,8 @@
 {
   "id": "sshConnections",
   "name": "SSH Connections",
-  "description": "Add SSH Connections to Launcher",
-  "version": "0.0.1",
+  "description": "SSH to configured servers from the Launcher",
+  "version": "1.0.0",
   "author": "Michael Erdely",
   "icon": "extension",
   "type": "launcher",
@@ -11,5 +11,5 @@
   "viewModeEnforced": false,
   "component": "./sshConnections.qml",
   "settings": "./sshConnectionsSettings.qml",
-  "permissions": ["settings_read", "settings_write"]
+  "permissions": ["process", "settings_read", "settings_write"]
 }

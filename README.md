@@ -6,7 +6,7 @@
 * [Flatpak Updates](FlatpakUpdates) - Check for and install Flatpak Updates
 
 ### Launcher Plugins
-* [SSH Connections](SSHConnections) - Make SSH Connections from Launcher
+* [SSH Connections](sshConnections) - SSH to configured servers from the Launcher
 
 ## Repository Info
 
