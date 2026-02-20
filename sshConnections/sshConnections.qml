@@ -6,11 +6,12 @@ import qs.Services
 QtObject {
     id: root
 
+    readonly property string plugin_name: "sshConnections"
     readonly property string default_trigger: ";"
-    readonly property var default_server_list: [{ "server": "localhost" }]
+    readonly property string default_server: "localhost"
+    readonly property var default_server_list: [{ "server": default_server }]
     readonly property string default_terminal: "kitty"
     readonly property string default_exec_flag: "-e"
-
 
     property var pluginService: null
     property string trigger: default_trigger
@@ -21,13 +22,13 @@ QtObject {
     signal itemsChanged()
 
     Component.onCompleted: {
-        console.info("sshConnections: Plugin loaded")
+        console.info(plugin_name + ": Plugin loaded")
 
         if (pluginService) {
-            trigger = pluginService.loadPluginData("sshConnections", "trigger", default_trigger);
-            server_list = pluginService.loadPluginData("sshConnections", "server_list", default_server_list);
-            terminal = pluginService.loadPluginData("sshConnections", "terminal", default_terminal);
-            exec_flag = pluginService.loadPluginData("sshConnections", "exec_flag", default_exec_flag);
+            trigger = pluginService.loadPluginData(plugin_name, "trigger", default_trigger);
+            server_list = pluginService.loadPluginData(plugin_name, "server_list", default_server_list);
+            terminal = pluginService.loadPluginData(plugin_name, "terminal", default_terminal);
+            exec_flag = pluginService.loadPluginData(plugin_name, "exec_flag", default_exec_flag);
         }
     }
 
@@ -51,7 +52,6 @@ QtObject {
               categories: ["SSH Connections"],
           });
         }
-              // _preScored: 1000 - i
 
         if (!query || query.length === 0) {
           return item_list
@@ -68,17 +68,17 @@ QtObject {
     function executeItem(item) {
         if (!item?.action)
             return;
-        const host = item.action.substring(4); // Remove "sshConnections:" prefix
+        const host = item.action.substring(4); // Remove "ssh:" prefix
         const terminal = getTerminalCommand();
-        console.info("sshConnections: Running '" + terminal.cmd + " " + terminal.exec_flag + " ssh " + host + "'");
+        console.info(plugin_name + ": Running '" + terminal.cmd + " " + terminal.exec_flag + " ssh " + host + "'");
         Quickshell.execDetached([terminal.cmd, terminal.exec_flag, "ssh", host]);
     }
 
     // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
     function getTerminalCommand() {
         if (pluginService) {
-            const terminal = pluginService.loadPluginData("sshConnections", "terminal", default_terminal);
-            const exec_flag = pluginService.loadPluginData("sshConnections", "exec_flag", default_exec_flag);
+            const terminal = pluginService.loadPluginData(plugin_name, "terminal", default_terminal);
+            const exec_flag = pluginService.loadPluginData(plugin_name, "exec_flag", default_exec_flag);
             if (terminal && exec_flag) {
                 return {
                     cmd: terminal,

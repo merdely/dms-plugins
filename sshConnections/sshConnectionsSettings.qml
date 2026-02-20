@@ -7,9 +7,11 @@ PluginSettings {
     id: root
     pluginId: "sshConnections"
 
-    Component.onCompleted {
-      console.info("sshConnectionsSettings: Plugin settings loaded")
-    }
+    readonly property string plugin_name: "sshConnections"
+    readonly property string default_trigger: ";"
+    readonly property string default_server: "localhost"
+    readonly property string default_terminal: "kitty"
+    readonly property string default_exec_flag: "-e"
 
     StyledText {
         width: parent.width
@@ -50,7 +52,7 @@ PluginSettings {
                     if (value)
                         root.saveValue("trigger", "");
                     else
-                        root.saveValue("trigger", triggerSetting.value || ";");
+                        root.saveValue("trigger", triggerSetting.value || default_trigger);
                 }
             }
 
@@ -59,9 +61,9 @@ PluginSettings {
                 visible: !noTriggerToggle.value
                 settingKey: "trigger"
                 label: I18n.tr("Trigger Prefix")
-                description: "Type this prefix to search SSH Connection List (default: ;)"
-                placeholder: ";"
-                defaultValue: ";"
+                description: "Type this prefix to search SSH Connection List (default: " + default_trigger + ")"
+                placeholder: default_trigger
+                defaultValue: default_trigger
             }
         }
     }
@@ -86,9 +88,9 @@ PluginSettings {
             StringSetting {
                 settingKey: "terminal"
                 label: "Application"
-                description: "Terminal application to run for SSH command (e.g. kitty, foot)"
-                placeholder: "kitty"
-                defaultValue: "kitty"
+                description: "Terminal application to run for SSH command (e.g. " + default_terminal + ", alacritty, foot)"
+                placeholder: default_terminal
+                defaultValue: default_terminal
             }
         }
 
@@ -99,9 +101,9 @@ PluginSettings {
             StringSetting {
                 settingKey: "exec_flag"
                 label: "Exec Flag"
-                description: "Flag for Terminal Application to execute programs (e.g. -e)"
-                placeholder: "-e"
-                defaultValue: "-e"
+                description: "Flag for Terminal Application to execute programs (e.g. " + default_exec_flag + ")"
+                placeholder: default_exec_flag
+                defaultValue: default_exec_flag
             }
         }
     }
@@ -109,10 +111,10 @@ PluginSettings {
     ListSettingWithInput {
         settingKey: "server_list"
         label: "SSH Connection List"
-        description: "Server List (default to 'localhost')"
-        defaultValue: ["localhost"]
+        description: "Server List (default to '" + default_server + "')"
+        defaultValue: [{"server": default_server}]
         fields: [
-            {id: "server", label: "Server", placeholder: "localhost", width: 150, required: true},
+            {id: "server", label: "Server", placeholder: default_server, width: 150, required: true},
         ]
     }
 }
