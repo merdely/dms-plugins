@@ -11,7 +11,8 @@ PluginSettings {
     readonly property string default_trigger: ";"
     readonly property string default_server: "localhost"
     readonly property string default_terminal: "kitty"
-    readonly property string default_exec_flag: "-e"
+    readonly property string default_exec_flags: "-e"
+    readonly property string default_ssh_command: "ssh"
 
     StyledText {
         width: parent.width
@@ -99,13 +100,21 @@ PluginSettings {
             spacing: Theme.spacingXS
 
             StringSetting {
-                settingKey: "exec_flag"
+                settingKey: "exec_flags"
                 label: "Exec Flag"
-                description: "Flag for Terminal Application to execute programs (e.g. " + default_exec_flag + ")"
-                placeholder: default_exec_flag
-                defaultValue: default_exec_flag
+                description: "Flag for Terminal Application to execute programs (e.g. " + default_exec_flags + ")"
+                placeholder: default_exec_flags
+                defaultValue: default_exec_flags
             }
         }
+    }
+
+    StringSetting {
+        settingKey: "ssh_command"
+        label: "SSH Command"
+        description: "Command to run for SSH (e.g. 'ssh' or 'kitten ssh')"
+        placeholder: default_ssh_command
+        defaultValue: default_ssh_command
     }
 
     ListSettingWithInput {
