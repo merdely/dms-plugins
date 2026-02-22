@@ -44,6 +44,22 @@ QtObject {
             .charAt(0).toUpperCase() + str.slice(1);
     }
 
+    function matchQuery(query, item_list) {
+        const q = query.toLowerCase();
+        return item_list.some(item =>
+            item.name.toLowerCase() == q
+        );
+    }
+
+    function filterQuery(query, item_list) {
+        const q = query.toLowerCase();
+        return item_list.filter(item => {
+            return item.name.toLowerCase().includes(q) ||
+                   item.comment.toLowerCase().includes(q)
+        });
+    }
+
+    // Borrowed some ideas from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
     function getItems(query) {
         const item_list = [];
         for (let item of server_list) {
@@ -58,14 +74,22 @@ QtObject {
 
         if (!query || query.length === 0) {
           return item_list
+        } else {
+            if (! matchQuery(query, item_list)) {
+                const host = query.trim();
+
+                item_list.push({
+                    name: "SSH to: " + host,
+                    icon: "material:terminal",
+                    comment: "SSH to " + host,
+                    action: "ssh:" + host,
+                    categories: ["SSH Connections"] //,
+                });
+            }
         }
 
         // Filter items based on query
-        const lowerQuery = query.toLowerCase()
-        return item_list.filter(item => {
-            return item.name.toLowerCase().includes(lowerQuery) ||
-                   item.comment.toLowerCase().includes(lowerQuery)
-        })
+        return filterQuery(query, item_list);
     }
 
     function executeItem(item) {
