@@ -13,6 +13,7 @@ QtObject {
     readonly property string default_terminal: "kitty"
     readonly property string default_exec_flags: "-e"
     readonly property string default_ssh_command: "ssh"
+    readonly property string default_max_history: "20"
 
     property var pluginService: null
     property string trigger: default_trigger
@@ -20,6 +21,8 @@ QtObject {
     property string terminal: default_terminal
     property string exec_flags: default_exec_flags
     property string ssh_command: default_ssh_command
+    property string max_history: default_max_history
+    property var history: []
 
     signal itemsChanged()
 
@@ -32,6 +35,8 @@ QtObject {
             terminal = pluginService.loadPluginData(plugin_name, "terminal", default_terminal);
             exec_flags = pluginService.loadPluginData(plugin_name, "exec_flags", default_exec_flags);
             ssh_command = pluginService.loadPluginData(plugin_name, "ssh_command", default_ssh_command);
+            max_history = pluginService.loadPluginData(plugin_name, "max_history", default_max_history);
+            history = pluginService.loadPluginData(plugin_name, "history", []);
         }
     }
 
@@ -46,22 +51,20 @@ QtObject {
 
     function matchQuery(query, item_list) {
         const q = query.toLowerCase();
-        return item_list.some(item =>
-            item.name.toLowerCase() == q
-        );
+        return item_list.some(item => item.name.toLowerCase() == q);
     }
 
     function filterQuery(query, item_list) {
+        if (! query)
+            return item_list;
         const q = query.toLowerCase();
-        return item_list.filter(item => {
-            return item.name.toLowerCase().includes(q) ||
-                   item.comment.toLowerCase().includes(q)
-        });
+        return item_list.filter(item => { return item.name.toLowerCase().includes(q) });
     }
 
     // Borrowed some ideas from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
     function getItems(query) {
         const item_list = [];
+        let index = 0;
         for (let item of server_list) {
           item_list.push({
               name: titleCase(item['server']),
@@ -69,11 +72,29 @@ QtObject {
               comment: "SSH to " + titleCase(item['server']),
               action: "ssh:" + item['server'],
               categories: ["SSH Connections"],
+              _preScored: 1000 - index
           });
+          index = index + 1;
+        }
+
+        if (history.length > 0) {
+            const filteredHistory = query ? history.filter(host => host.toLowerCase().includes(query.toLowerCase())) : history;
+
+            for (let i = 0; i < Math.min(10, filteredHistory.length); i++) {
+                const host = filteredHistory[i];
+                item_list.push({
+                    name: host,
+                    icon: "material:terminal",
+                    comment: "SSH to " + host,
+                    action: "ssh:" + host,
+                    categories: ["SSH Connections"],
+                    _preScored: 2000 - i
+                });
+            }
         }
 
         if (!query || query.length === 0) {
-          return item_list
+          return filterQuery(null, item_list);
         } else {
             if (! matchQuery(query, item_list)) {
                 const host = query.trim();
@@ -83,7 +104,8 @@ QtObject {
                     icon: "material:terminal",
                     comment: "SSH to " + host,
                     action: "ssh:" + host,
-                    categories: ["SSH Connections"] //,
+                    categories: ["SSH Connections"],
+                    _preScored: 1
                 });
             }
         }
@@ -99,6 +121,28 @@ QtObject {
         const terminal_object = getTerminalCommand();
         const terminal = terminal_object.cmd;
         const exec_flags = terminal_object.exec_flags;
+
+        // Save to history
+        const s = server.toLowerCase();
+
+        if (! server_list.some(item => item.server.toLowerCase() == s)) {
+            const index = history.indexOf(server)
+            if (index > -1) {
+                history.splice(server, 1);
+            }
+
+            history.unshift(server);
+
+            if (history.length > max_history) {
+                history = history.slice(0, max_history);
+            }
+
+            if (pluginService) {
+                pluginService.savePluginData(plugin_name, "history", history);
+            }
+
+            itemsChanged();
+        }
 
         // Build command array
         const command = [ terminal ].concat(exec_flags.split(' '), ssh_command.split(' '), server.split(' '));

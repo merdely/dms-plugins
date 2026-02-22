@@ -13,6 +13,7 @@ PluginSettings {
     readonly property string default_terminal: "kitty"
     readonly property string default_exec_flags: "-e"
     readonly property string default_ssh_command: "ssh"
+    readonly property string default_max_history: "20"
 
     StyledText {
         width: parent.width
@@ -22,57 +23,35 @@ PluginSettings {
         color: Theme.surfaceText
     }
 
-    StyledRect {
+    // Separator Line (from command runner)
+    Rectangle {
         width: parent.width
-        height: triggerColumn.implicitHeight + Theme.spacingL * 2
-        radius: Theme.cornerRadius
-        color: Theme.surfaceContainerHigh
+        height: 1
+        color: Theme.outline
+        opacity: 0.3
+    }
 
-        Column {
-            id: triggerColumn
-            anchors.fill: parent
-            anchors.margins: Theme.spacingL
-            spacing: Theme.spacingM
+    StringSetting {
+        id: triggerSetting
+        settingKey: "trigger"
+        label: I18n.tr("Trigger Prefix")
+        description: "Type this prefix to search SSH Connection List (default: " + default_trigger + ")"
+        placeholder: default_trigger
+        defaultValue: default_trigger
+    }
 
-            StyledText {
-                text: I18n.tr("Activation")
-                font.pixelSize: Theme.fontSizeMedium
-                font.weight: Font.Medium
-                color: Theme.surfaceText
-            }
-
-            ToggleSetting {
-                id: noTriggerToggle
-                settingKey: "noTrigger"
-                label: I18n.tr("Always Active")
-                description: value ? I18n.tr("Keybinds shown alongside regular search results") : I18n.tr("Use trigger prefix to activate")
-                defaultValue: false
-                onValueChanged: {
-                    if (!isInitialized)
-                        return;
-                    if (value)
-                        root.saveValue("trigger", "");
-                    else
-                        root.saveValue("trigger", triggerSetting.value || default_trigger);
-                }
-            }
-
-            StringSetting {
-                id: triggerSetting
-                visible: !noTriggerToggle.value
-                settingKey: "trigger"
-                label: I18n.tr("Trigger Prefix")
-                description: "Type this prefix to search SSH Connection List (default: " + default_trigger + ")"
-                placeholder: default_trigger
-                defaultValue: default_trigger
-            }
-        }
+    // Separator Line (from command runner)
+    Rectangle {
+        width: parent.width
+        height: 1
+        color: Theme.outline
+        opacity: 0.3
     }
 
     // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
     StyledText {
         width: parent.width
-        text: "Configure Terminal Settings"
+        text: "Terminal Settings"
         font.pixelSize: Theme.fontSizeMedium
         color: Theme.surfaceVariantText
         wrapMode: Text.WordWrap
@@ -109,12 +88,96 @@ PluginSettings {
         }
     }
 
+    // Separator Line (from command runner)
+    Rectangle {
+        width: parent.width
+        height: 1
+        color: Theme.outline
+        opacity: 0.3
+    }
+
     StringSetting {
         settingKey: "ssh_command"
         label: "SSH Command"
         description: "Command to run for SSH (e.g. 'ssh' or 'kitten ssh')"
         placeholder: default_ssh_command
         defaultValue: default_ssh_command
+    }
+
+    // Separator Line (from command runner)
+    Rectangle {
+        width: parent.width
+        height: 1
+        color: Theme.outline
+        opacity: 0.3
+    }
+
+    // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
+    StyledText {
+        width: parent.width
+        text: "History Settings"
+        font.pixelSize: Theme.fontSizeMedium
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    StyledText {
+        width: parent.width
+        text: "A list of previously connected to servers that are not in the SSH Connection List"
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    Row {
+        width: parent.width
+        spacing: Theme.spacingM
+
+        StyledText {
+            text: "Max history items"
+            font.pixelSize: Theme.fontSizeMedium
+            color: Theme.surfaceText
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        DankTextField {
+            id: historyField
+            width: 80
+            text: root.loadValue("max_history", default_max_history).toString()
+            placeholderText: default_max_history
+            onTextEdited: {
+                const num = parseInt(text);
+                if (!isNaN(num) && num > 0 && num <= 100) {
+                    root.saveValue("max_history", num);
+                }
+            }
+        }
+
+        StyledText {
+            text: "(1-100)"
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.surfaceVariantText
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    DankButton {
+        text: "Clear Host History"
+        iconName: "delete"
+        backgroundColor: Theme.error
+        textColor: Theme.surface
+        onClicked: {
+            root.saveValue("history", []);
+            ToastService?.showInfo("Host history cleared");
+        }
+    }
+
+    // Separator Line (from command runner)
+    Rectangle {
+        width: parent.width
+        height: 1
+        color: Theme.outline
+        opacity: 0.3
     }
 
     ListSettingWithInput {
