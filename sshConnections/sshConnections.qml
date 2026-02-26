@@ -9,7 +9,8 @@ QtObject {
     readonly property string plugin_name: "sshConnections"
     readonly property string default_trigger: ";"
     readonly property string default_server: "localhost"
-    readonly property var default_server_list: [{ "server": default_server }]
+    readonly property string default_options: ""
+    readonly property var default_server_list: [{ "server": default_server, "options": default_options }]
     readonly property string default_terminal: "kitty"
     readonly property string default_exec_flags: "-e"
     readonly property string default_ssh_command: "ssh"
@@ -27,8 +28,6 @@ QtObject {
     signal itemsChanged()
 
     Component.onCompleted: {
-        console.info(plugin_name + ": Plugin loaded")
-
         if (pluginService) {
             trigger = pluginService.loadPluginData(plugin_name, "trigger", default_trigger);
             server_list = pluginService.loadPluginData(plugin_name, "server_list", default_server_list);
@@ -70,7 +69,7 @@ QtObject {
               name: titleCase(item['server']),
               icon: "material:terminal",
               comment: "SSH to " + titleCase(item['server']),
-              action: "ssh:" + item['server'],
+              action: "ssh:" + item['server'] + ":" + item['options'],
               categories: ["SSH Connections"],
               _preScored: 1000 - index
           });
@@ -117,7 +116,14 @@ QtObject {
     function executeItem(item) {
         if (!item?.action)
             return;
-        const server = item.action.substring(4); // Remove "ssh:" prefix
+        const action_items = item.action.split(':');
+        if (action_items.length < 2)
+            return;
+        const server = action_items[1];
+        let options = "";
+        if (action_items.length > 2) {
+            options = action_items.slice(2).join(':');
+        }
         const terminal_object = getTerminalCommand();
         const terminal = terminal_object.cmd;
         const exec_flags = terminal_object.exec_flags;
@@ -145,7 +151,7 @@ QtObject {
         }
 
         // Build command array
-        const command = [ terminal ].concat(exec_flags.split(' '), ssh_command.split(' '), server.split(' '));
+        const command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + options + " " + server);
 
         console.info(plugin_name + ": Running '" + command.join(' ') + "'");
         Quickshell.execDetached(command);

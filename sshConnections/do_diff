@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Small script to compare ServerList with ListSettingWithInput
+
+[[ $* =~ -h ]] && echo "usage: ${0##*/} [dms_quickshell_path]" && exit
+! command -v diff &> /dev/null && echo "Error: diff command required" && exit 1
+
+# Determine path to DankMaterialShell quickshell code installed on the system
+paths=(
+  /usr/share/quickshell/dms
+  /usr/local/share/quickshell/dms
+  /etc/xdg/quickshell/dms
+)
+
+# Allow passing additional DMS quickshell code paths on command line
+while [ -n "$1" ]; do
+  [ -d "$1" ] && paths+=($1) && continue
+  echo "Warning: '$1' not found or is not a directory" > /dev/stderr
+done
+
+# Use the first path where ListSettingWithInput.qml is found
+unset qs_path
+for p in ${paths[@]}; do
+  [ -r "$p"/Modules/Plugins/ListSettingWithInput.qml ] && qs_path=$p && break
+done
+[ -z "$qs_path" ] && echo "Error: Could not find dms quickshell code" > /dev/stderr && exit 1
+
+# Compare the two files with diff
+scriptdir=$(realpath "$0")
+scriptdir=${scriptdir%/*}
+diff -u "$qs_path"/Modules/Plugins/ListSettingWithInput.qml "$scriptdir"/ServerList.qml

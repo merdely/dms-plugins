@@ -10,6 +10,7 @@ PluginSettings {
     readonly property string plugin_name: "sshConnections"
     readonly property string default_trigger: ";"
     readonly property string default_server: "localhost"
+    readonly property string default_options: ""
     readonly property string default_terminal: "kitty"
     readonly property string default_exec_flags: "-e"
     readonly property string default_ssh_command: "ssh"
@@ -180,13 +181,14 @@ PluginSettings {
         opacity: 0.3
     }
 
-    ListSettingWithInput {
+    ServerList {
         settingKey: "server_list"
         label: "SSH Connection List"
         description: "Server List (default to '" + default_server + "')"
         defaultValue: [{"server": default_server}]
         fields: [
-            {id: "server", label: "Server", placeholder: default_server, width: 150, required: true},
+            {id: "server", label: "Server", placeholder: default_server, width: 130, required: true},
+            {id: "options", label: "Options", placeholder: default_options, width: 200, required: false},
         ]
     }
 }
