@@ -10,12 +10,16 @@ import qs.Modules.Plugins
 PluginComponent {
     id: root
 
+    readonly property string plugin_name: "flatpakUpdates"
+    readonly property int updateCount: availableUpdates.length
+
     property string get_updates_available: Qt.resolvedUrl("scripts/get_updates_available.py")
     property var availableUpdates: []
     property bool isChecking: false
     property bool hasError: false
     property string errorMessage: ""
-    readonly property int updateCount: availableUpdates.length
+    property string terminal: pluginData.terminal || Quickshell.env("TERMINAL") || "kitty"
+    property string check_interval: pluginData.check_interval || 30
 
     function refresh() {
         if (isChecking)
@@ -43,14 +47,14 @@ PluginComponent {
     function runUpdates() {
       if (updateCount === 0 || updateInstaller.running)
           return;
-      const terminal = Quickshell.env("TERMINAL") || "xterm";
       const command_string = "flatpak update -y ; echo Press Enter to close window; read"
       updateInstaller.command = [terminal, "-e", "sh", "-c", command_string]
+      console.info(plugin_name, ": Running command: '" + updateInstaller.command.join(' ') + "'")
       updateInstaller.running = true;
     }
 
     Timer {
-        interval: 1000 * 30 * 60  // 30 minutes
+        interval: 1000 * check_interval * 60
         repeat: true
         running: true
         triggeredOnStart: true
