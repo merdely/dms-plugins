@@ -65,11 +65,15 @@ QtObject {
         const item_list = [];
         let index = 0;
         for (let item of server_list) {
+          let action_string = item['server'];
+          if (item['options'] && item['options'].length > 0) {
+              action_string = action_string + ":" + item['options']
+          }
           item_list.push({
               name: titleCase(item['server']),
               icon: "material:terminal",
               comment: "SSH to " + titleCase(item['server']),
-              action: "ssh:" + item['server'] + ":" + item['options'],
+              action: "ssh:" + action_string,
               categories: ["SSH Connections"],
               _preScored: 1000 - index
           });
@@ -151,7 +155,12 @@ QtObject {
         }
 
         // Build command array
-        const command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + options + " " + server);
+        let command = []
+        if (options.length > 0) {
+            command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + options + " " + server);
+        } else {
+            command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + server);
+        }
 
         console.info(plugin_name + ": Running '" + command.join(' ') + "'");
         Quickshell.execDetached(command);
