@@ -301,13 +301,31 @@ Column {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 50
                     height: 28
-                    color: editArea.containsMouse ? Theme.secondaryHover : Theme.secondary
+                    color: Theme.secondary
                     radius: Theme.cornerRadius
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: parent.radius
+                        color: {
+                            if (editArea.pressed)
+                                return Theme.withAlpha(Theme.buttonText, 0.20);
+                            if (editArea.containsMouse)
+                                return Theme.withAlpha(Theme.buttonText, 0.12);
+                            return "transparent";
+                        }
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.shorterDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+                    }
 
                     StyledText {
                         anchors.centerIn: parent
                         text: I18n.tr("Edit")
-                        color: Theme.onSecondary
+                        color: Theme.buttonText
                         font.pixelSize: Theme.fontSizeSmall
                         font.weight: Font.Medium
                     }
@@ -330,13 +348,32 @@ Column {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 60
                     height: 28
-                    color: removeArea.containsMouse ? Theme.errorHover : Theme.error
+                    // color: removeArea.containsMouse ? Theme.errorHover : Theme.error
+                    color: Theme.error
                     radius: Theme.cornerRadius
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: parent.radius
+                        color: {
+                            if (removeArea.pressed)
+                                return Theme.withAlpha(Theme.buttonText, 0.20);
+                            if (removeArea.containsMouse)
+                                return Theme.withAlpha(Theme.buttonText, 0.12);
+                            return "transparent";
+                        }
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.shorterDuration
+                                easing.type: Theme.standardEasing
+                            }
+                        }
+                    }
 
                     StyledText {
                         anchors.centerIn: parent
                         text: I18n.tr("Remove")
-                        color: Theme.onError
+                        color: Theme.buttonText
                         font.pixelSize: Theme.fontSizeSmall
                         font.weight: Font.Medium
                     }
