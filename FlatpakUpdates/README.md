@@ -11,7 +11,7 @@ allows for adding a widget to the DankBar to check for Flatpak updates.
 
 ## Screenshot
 
-![Screenshot of Flatpak Update's Popout](/screenshots/flatpakupdates-popout.png)
+![Screenshot of Flatpak Update's Popout](../screenshots/flatpakupdates-popout.png)
 
 ## Repository Info
 
