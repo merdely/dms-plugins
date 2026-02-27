@@ -16,6 +16,7 @@ help keeping them in sync.
 ## Screenshot
 
 ![Screenshot of SSH Connections in the Launcher](/screenshots/sshconnections.png)
+![Screenshot of SSH Connections Settings](/screenshots/sshconnections_settings.png)
 
 ## Repository Info
 
