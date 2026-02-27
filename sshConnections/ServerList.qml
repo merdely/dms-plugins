@@ -348,7 +348,6 @@ Column {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 60
                     height: 28
-                    // color: removeArea.containsMouse ? Theme.errorHover : Theme.error
                     color: Theme.error
                     radius: Theme.cornerRadius
 
