@@ -107,14 +107,23 @@ PluginComponent {
         sourceComponent: DankTooltip {}
     }
 
-    horizontalBarPill: Component {
-        Row {
+    component BarPillContent: Item {
+        property bool isVertical: false
+
+        implicitWidth: layout.implicitWidth
+        implicitHeight: layout.implicitHeight
+        anchors.centerIn: parent
+
+        Grid {
+            id: layout
             anchors.centerIn: parent
+            rows: isVertical ? 0: 1
+            columns: isVertical ? 1: 0
             spacing: Theme.spacingXS
+            horizontalItemAlignment: Grid.AlignHCenter
 
             DankIcon {
                 id: dankIcon
-                anchors.verticalCenter: parent.verticalCenter
                 name: {
                     if (root.isChecking)
                         return "refresh";
@@ -158,9 +167,51 @@ PluginComponent {
                         if (root.parentScreen) {
                             tooltipLoader.active = true;
                             if (tooltipLoader.item) {
-                                const tooltipText = `Flatpak Updates: ${root.updateCount}`
-                                const isLeft = root.axis?.edge === "left";
-                                tooltipLoader.item.show(tooltipText, tooltipLoader.item.width / 2 + dankIcon.width + dankIcon.mapToGlobal(0, 0).x, Theme.barHeight, root.parentScreen, isLeft, !isLeft);
+                                const tooltipText = `Flatpak Updates: ${root.updateCount}`;
+                                const edge = root.axis?.edge;
+                                const isLeft = edge === "left";
+                                const dankIconPosition = dankIcon.mapToGlobal(0, 0);
+                                if (isVertical) {
+                                    if (edge === "left") {
+                                        tooltipLoader.item.show(
+                                            tooltipText,
+                                            Theme.barHeight,
+                                            tooltipLoader.item.height / 2 + dankIconPosition.y,
+                                            root.parentScreen,
+                                            isLeft,
+                                            !isLeft
+                                        );
+                                    } else {
+                                        tooltipLoader.item.show(
+                                            tooltipText,
+                                            root.parentScreen.width - tooltipLoader.item.width - Theme.barHeight - Theme.spacingM,
+                                            tooltipLoader.item.height / 2 + dankIconPosition.y,
+                                            root.parentScreen,
+                                            !isLeft,
+                                            isLeft
+                                        );
+                                    }
+                                } else {
+                                    if (edge === "top") {
+                                        tooltipLoader.item.show(
+                                            tooltipText,
+                                            tooltipLoader.item.width / 2 + dankIcon.width + dankIconPosition.x,
+                                            tooltipLoader.item.height / 2 + Theme.barHeight,
+                                            root.parentScreen,
+                                            isLeft,
+                                            !isLeft
+                                        );
+                                    } else {
+                                        tooltipLoader.item.show(
+                                            tooltipText,
+                                            tooltipLoader.item.width / 2 + dankIcon.width + dankIconPosition.x,
+                                            root.parentScreen.height - tooltipLoader.item.height / 2 - Theme.barHeight,
+                                            root.parentScreen,
+                                            isLeft,
+                                            !isLeft
+                                        );
+                                    }
+                                }
                             }
                         }
                     }
@@ -174,14 +225,21 @@ PluginComponent {
             }
 
             StyledText {
-                text: root.updateCount
+                text: isVertical ? root.updateCount : String(root.updateCount) + " "
                 font.pixelSize: Theme.fontSizeSmall
                 font.weight: Font.Medium
                 color: Theme.surfaceVariantText
-                anchors.verticalCenter: parent.verticalCenter
                 visible: root.updateCount > 0 && !root.isChecking
             }
         }
+    }
+
+    horizontalBarPill: Component {
+        BarPillContent { isVertical: false }
+    }
+
+    verticalBarPill: Component {
+        BarPillContent { isVertical: true }
     }
 
     popoutContent: Component {
