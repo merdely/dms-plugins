@@ -188,7 +188,7 @@ PluginSettings {
         defaultValue: [{"server": default_server}]
         fields: [
             {id: "server", label: "Server", placeholder: default_server, width: 130, required: true},
-            {id: "options", label: "Options", placeholder: default_options, width: 200, required: false},
+            {id: "options", label: "Options", placeholder: default_options, width: 195, required: false},
         ]
     }
 }
