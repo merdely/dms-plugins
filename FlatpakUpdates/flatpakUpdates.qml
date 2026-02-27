@@ -62,43 +62,43 @@ PluginComponent {
     }
 
     Process {
-      id: updateChecker
+        id: updateChecker
 
-      onExited: exitCode => {
-          isChecking = false;
-      }
+        onExited: exitCode => {
+            isChecking = false;
+        }
 
-      stdout: StdioCollector {
-          id: out
-          onStreamFinished: () => {
-              try {
-                  parseUpdates(text);
-                  hasError = false;
-              } catch(e) {
-                  hasError = true;
-                  errorMessage = String(e);
-                  availableUpdates = [];
-              }
-          }
-      }
-      stderr: StdioCollector {
-          id: outErr
-          onStreamFinished: () => {
-              if (text && text.trim().length > 0) {
-                  hasError = true;
-                  errorMessage = String(text);
-                  availableUpdates = [];
-              }
-          }
-      }
+        stdout: StdioCollector {
+            id: out
+            onStreamFinished: () => {
+                try {
+                    parseUpdates(text);
+                    hasError = false;
+                } catch(e) {
+                    hasError = true;
+                    errorMessage = String(e);
+                    availableUpdates = [];
+                }
+            }
+        }
+        stderr: StdioCollector {
+            id: outErr
+            onStreamFinished: () => {
+                if (text && text.trim().length > 0) {
+                    hasError = true;
+                    errorMessage = String(text);
+                    availableUpdates = [];
+                }
+            }
+        }
     }
 
     Process {
-      id: updateInstaller
+        id: updateInstaller
 
-      onExited: exitCode => {
-          refresh();
-      }
+        onExited: exitCode => {
+            refresh();
+        }
     }
 
     Loader {
@@ -190,7 +190,7 @@ PluginComponent {
             showCloseButton: false
 
             Component.onCompleted: {
-              refresh();
+                refresh();
             }
 
             Column {
