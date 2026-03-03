@@ -36,15 +36,6 @@ QtObject {
         }
     }
 
-    function titleCase(str) {
-        return str
-            .toLowerCase()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-            .charAt(0).toUpperCase() + str.slice(1);
-    }
-
     function matchQuery(query, item_list) {
         const q = query.toLowerCase();
         return item_list.some(item => item.name.toLowerCase() == q);
@@ -67,9 +58,9 @@ QtObject {
               action_string = action_string + ":" + item['options']
           }
           item_list.push({
-              name: titleCase(item['server']),
+              name: item['server'],
               icon: "material:terminal",
-              comment: "SSH to " + titleCase(item['server']),
+              comment: "SSH to " + item['server'],
               action: "ssh:" + action_string,
               categories: ["SSH Connections"],
               _preScored: 1000 - index
