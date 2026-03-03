@@ -11,8 +11,7 @@ QtObject {
     readonly property string default_server: "localhost"
     readonly property string default_options: ""
     readonly property var default_server_list: [{ "server": default_server, "options": default_options }]
-    readonly property string default_terminal: "kitty"
-    readonly property string default_exec_flags: "-e"
+    readonly property string default_terminal: Quickshell.env("TERMINAL") || "kitty"
     readonly property string default_ssh_command: "ssh"
     readonly property string default_max_history: "20"
 
@@ -20,7 +19,6 @@ QtObject {
     property string trigger: default_trigger
     property var server_list: default_server_list
     property string terminal: default_terminal
-    property string exec_flags: default_exec_flags
     property string ssh_command: default_ssh_command
     property string max_history: default_max_history
     property var history: []
@@ -32,7 +30,6 @@ QtObject {
             trigger = pluginService.loadPluginData(plugin_name, "trigger", default_trigger);
             server_list = pluginService.loadPluginData(plugin_name, "server_list", default_server_list);
             terminal = pluginService.loadPluginData(plugin_name, "terminal", default_terminal);
-            exec_flags = pluginService.loadPluginData(plugin_name, "exec_flags", default_exec_flags);
             ssh_command = pluginService.loadPluginData(plugin_name, "ssh_command", default_ssh_command);
             max_history = pluginService.loadPluginData(plugin_name, "max_history", default_max_history);
             history = pluginService.loadPluginData(plugin_name, "history", []);
@@ -128,9 +125,6 @@ QtObject {
         if (action_items.length > 2) {
             options = action_items.slice(2).join(':');
         }
-        const terminal_object = getTerminalCommand();
-        const terminal = terminal_object.cmd;
-        const exec_flags = terminal_object.exec_flags;
 
         // Save to history
         const s = server.toLowerCase();
@@ -155,32 +149,13 @@ QtObject {
         }
 
         // Build command array
-        let command = []
-        if (options.length > 0) {
-            command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + options + " " + server);
-        } else {
-            command = [ terminal ].concat(exec_flags.split(' '), "sh", "-c", ssh_command + " " + server);
-        }
+        const termcmd = (" " + terminal + " ").includes(" -e ") ? terminal : terminal + " -e";
+        const command = termcmd.split(' ').concat(
+          "sh", "-c",
+          ssh_command + " " + (options.length > 0 ? options + " " : "") + server
+        );
 
         console.info(plugin_name + ": Running '" + command.join(' ') + "'");
         Quickshell.execDetached(command);
-    }
-
-    // Borrowed from https://github.com/devnullvoid/dms-command-runner/blob/main/CommandRunner.qml
-    function getTerminalCommand() {
-        if (pluginService) {
-            const terminal = pluginService.loadPluginData(plugin_name, "terminal", default_terminal);
-            const exec_flags = pluginService.loadPluginData(plugin_name, "exec_flags", default_exec_flags);
-            if (terminal && exec_flags) {
-                return {
-                    cmd: terminal,
-                    exec_flags: exec_flags
-                };
-            }
-        }
-        return {
-            cmd: default_terminal,
-            exec_flags: default_exec_flags
-        };
     }
 }

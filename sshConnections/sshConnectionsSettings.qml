@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import qs.Common
 import qs.Modules.Plugins
 import qs.Widgets
@@ -11,8 +12,7 @@ PluginSettings {
     readonly property string default_trigger: ";"
     readonly property string default_server: "localhost"
     readonly property string default_options: ""
-    readonly property string default_terminal: "kitty"
-    readonly property string default_exec_flags: "-e"
+    readonly property string default_terminal: Quickshell.env("TERMINAL") || "kitty"
     readonly property string default_ssh_command: "ssh"
     readonly property string default_max_history: "20"
 
@@ -58,35 +58,12 @@ PluginSettings {
         wrapMode: Text.WordWrap
     }
 
-    Row {
-        width: parent.width
-        spacing: Theme.spacingM
-
-        Column {
-            width: (parent.width - Theme.spacingM) / 2
-            spacing: Theme.spacingXS
-
-            StringSetting {
-                settingKey: "terminal"
-                label: "Application"
-                description: "Terminal application to run for SSH command (e.g. " + default_terminal + ", alacritty, foot)"
-                placeholder: default_terminal
-                defaultValue: default_terminal
-            }
-        }
-
-        Column {
-            width: (parent.width - Theme.spacingM) / 2
-            spacing: Theme.spacingXS
-
-            StringSetting {
-                settingKey: "exec_flags"
-                label: "Exec Flag"
-                description: "Flag for Terminal Application to execute programs (e.g. " + default_exec_flags + ")"
-                placeholder: default_exec_flags
-                defaultValue: default_exec_flags
-            }
-        }
+    StringSetting {
+        settingKey: "terminal"
+        label: "Application"
+        description: "Terminal application to run for SSH command (e.g. kitty, alacritty, foot). '-e' will automatically be appended. Can specify options like 'kitty --hold'."
+        placeholder: default_terminal
+        defaultValue: default_terminal
     }
 
     // Separator Line (from command runner)
