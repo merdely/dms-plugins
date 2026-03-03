@@ -47,9 +47,9 @@ PluginComponent {
     function runUpdates() {
       if (updateCount === 0 || updateInstaller.running)
           return;
-      const command_string = "flatpak update -y ; echo Press Enter to close window; read"
-      updateInstaller.command = [terminal, "-e", "sh", "-c", command_string]
-      console.info(plugin_name, ": Running command: '" + updateInstaller.command.join(' ') + "'")
+      const command_string = "flatpak update -y ; echo Press Enter to close window; read";
+      updateInstaller.command = terminal.split(' ').concat("-e", "sh", "-c", command_string);
+      console.info(plugin_name, ": Running command: '" + updateInstaller.command.join(' ') + "'");
       updateInstaller.running = true;
     }
 
@@ -65,6 +65,8 @@ PluginComponent {
         id: updateChecker
 
         onExited: exitCode => {
+            if (exitCode !== 0)
+                console.error(plugin_name, ": Could not run update checker (" + String(exitCode) + ")");
             isChecking = false;
         }
 
@@ -97,6 +99,8 @@ PluginComponent {
         id: updateInstaller
 
         onExited: exitCode => {
+            if (exitCode !== 0)
+                console.error(plugin_name, ": Could not run update installer (" + String(exitCode) + ")");
             refresh();
         }
     }

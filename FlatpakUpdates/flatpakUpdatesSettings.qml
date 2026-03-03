@@ -39,7 +39,7 @@ PluginSettings {
     StringSetting {
         settingKey: "terminal"
         label: "Application"
-        description: "Terminal application to run Flatpak command (e.g. kitty, alacritty, foot)"
+        description: "Terminal application to run Flatpak command (e.g. kitty, alacritty, foot). '-e' will automatically be appended. Can specify options like 'kitty --hold'."
         placeholder: default_terminal
         defaultValue: default_terminal
     }
