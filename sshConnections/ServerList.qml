@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import qs.Common
 import qs.Widgets
 
@@ -233,7 +234,7 @@ Column {
                 required property int index
                 required property var modelData
 
-                Row {
+                RowLayout {
                     id: itemRow
                     anchors.left: parent.left
                     anchors.leftMargin: Theme.spacingM
@@ -245,51 +246,60 @@ Column {
                     Repeater {
                         model: root.fields
 
-                        StyledText {
+                        Item {
                             required property int index
                             required property var modelData
-                            property bool truncated: false
 
-                            text: {
-                                const field = modelData
-                                const item = itemRow.itemData
-                                if (!field || !field.id || !item) {
-                                    return ""
-                                }
-                                const value = item[field.id]
-                                if (!value) return ""
-                                const maxLength = 50
-                                if (value.length > maxLength) {
-                                  truncated = true
-                                  return value.substring(0, maxLength) + "…"
-                                }
-                                return value || ""
-                            }
-                            color: Theme.surfaceText
-                            font.pixelSize: Theme.fontSizeMedium
-                            width: modelData ? (modelData.width || 200) : 200
-                            elide: Text.ElideRight
+                            Layout.preferredWidth: modelData ? (modelData.width || 200) : 200
+                            Layout.alignment: Qt.AlignVCenter
+                            implicitHeight: wrappingText.implicitHeight
 
-                            MouseArea {
-                                id: hoverArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onClicked: (mouse) => mouse.accepted = false
-                            }
+                            StyledText {
+                                id: wrappingText
+                                property bool truncated: false
+                                width: parent.width
 
-                            ToolTip {
-                                visible: truncated && hoverArea.containsMouse && parent.text !== ""
-                                y: -implicitHeight - 4
                                 text: {
-                                    const field = modelData
+                                    const field = parent.modelData
                                     const item = itemRow.itemData
                                     if (!field || !field.id || !item) {
                                         return ""
                                     }
                                     const value = item[field.id]
+                                    if (!value) return ""
+                                    const maxLength = 50
+                                    if (value.length > maxLength) {
+                                      truncated = true
+                                      return value.substring(0, maxLength) + "…"
+                                    }
                                     return value || ""
                                 }
-                                delay: 500
+                                color: Theme.surfaceText
+                                font.pixelSize: Theme.fontSizeMedium
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+
+                                MouseArea {
+                                    id: hoverArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: (mouse) => mouse.accepted = false
+                                }
+
+                                ToolTip {
+                                    visible: wrappingText.truncated && hoverArea.containsMouse && wrappingText.text !== ""
+                                    y: -implicitHeight - 4
+                                    text: {
+                                        const field = parent.parent.modelData
+                                        const item = itemRow.itemData
+                                        if (!field || !field.id || !item) {
+                                            return ""
+                                        }
+                                        const value = item[field.id]
+                                        return value || ""
+                                    }
+                                    delay: 500
+                                }
                             }
                         }
                     }
