@@ -252,7 +252,8 @@ PluginComponent {
             showCloseButton: false
 
             Component.onCompleted: {
-                refresh();
+                if (updateCount === 0)
+                    refresh();
             }
 
             Column {
