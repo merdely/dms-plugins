@@ -140,10 +140,26 @@ QtObject {
         }
 
         // Build command array
-        const termcmd = (" " + terminal + " ").includes(" -e ") ? terminal : terminal + " -e";
-        const command = termcmd.split(' ').concat(
+        const term = (terminal || "").trim() || default_terminal;
+        let termArgs = [];
+
+        if (term.includes(" -e ") || term.endsWith(" -e") || term.includes(" -- ")) {
+            termArgs = term.split(/\s+/);
+        } else if (term.startsWith("wezterm")) {
+            termArgs = term.split(/\s+/).concat("start", "--");
+        } else {
+            termArgs = term.split(/\s+/).concat("-e");
+        }
+
+        const sshArgs = [ssh_command];
+        if (options && options.trim().length > 0) {
+            sshArgs.push(options.trim());
+        }
+        sshArgs.push(server);
+
+        const command = termArgs.concat(
           "sh", "-c",
-          ssh_command + " " + (options.length > 0 ? options + " " : "") + server
+          sshArgs.join(" ")
         );
 
         console.info(plugin_name + ": Running '" + command.join(' ') + "'");
